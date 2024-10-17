@@ -32,10 +32,14 @@ var corsOptions = {
 app.use(morgan('dev'));
 app.use(cors());
 
+// Enable JSON and URL-encoded form data parsing
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(express.urlencoded({ extended: true ,limit:'55550mb'}));
 app.use(express.json( {limit: '10000mb', extended: true}));
 app.use('/images', express.static(path.join(__dirname, '/images')));
-app.use('/imgs', express.static(path.join(__dirname, '/imgs')));
+app.use('/imgs', express.static(path.join(__dirname, '/uploads')));
 app.use('/api', route);
 
 //test server

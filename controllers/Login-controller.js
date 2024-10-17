@@ -9,7 +9,7 @@ async function login(req,res){
         if(!MobileNumber || !Password) return sendError(res,"Bad Request",400)
 
         let checkuser = `EXEC splogin @LoginMobile = '${MobileNumber}', @LoginPwd = '${Password}'`
-
+        console.log(checkuser)
         checkuser = await executeQuery(checkuser)
 
         if(!checkuser[0]){

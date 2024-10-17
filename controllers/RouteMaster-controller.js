@@ -22,12 +22,18 @@ async function updateLatLong(req,res){
 
 async function getRouteSpot(req,res){
     try {
-        const {wardId} = req.query
+        const {wardId,Lat,Long} = req.query
 
         if(!wardId) return sendError(res,"Bad Request",400)
 
-        let updateQuery = `EXEC spGetSpotName  @flag='getAllDatafromlayers'`
+        let updateQuery = ``
+        if(Lat && Long){
+             updateQuery = `EXEC spGetSpotName  @flag='getlayerBasedonLatLong' ,@lat=${Lat},@lon=${Long}`
 
+        }else{
+            updateQuery = `EXEC spGetSpotName  @flag='getAllDatafromlayers' ,@WardId=${wardId}`
+        }
+        
         updateQuery = await executeQuery(updateQuery)
 
         return sendSuccess(res,"Success",updateQuery,200)
