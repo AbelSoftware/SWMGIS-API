@@ -14,7 +14,19 @@ const storage = multer.diskStorage({
 });
 
 
+const storageforTiolet = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/ToiletFile');  // Destination folder to store uploaded files
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.originalname);
+  }
+});
+
+
 // Create multer instance with storage configuration
 const upload = multer({ storage: storage });
+const uploadForTiolet = multer({storage : storageforTiolet})
 
-module.exports = {upload}
+module.exports = {upload,uploadForTiolet}

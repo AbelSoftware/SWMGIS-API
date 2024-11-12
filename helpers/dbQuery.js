@@ -13,7 +13,7 @@ async function executeQuery(Query) {
             let result = await pool.request()
                 .query(Query);
     
-            console.log(result);  // Result contains the returned rows
+            // console.log(result);  // Result contains the returned rows
     
             resolve(result.recordset)
         } catch (err) {

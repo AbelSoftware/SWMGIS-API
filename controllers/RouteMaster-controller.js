@@ -4,12 +4,20 @@ const {isFloat} = require('../helpers/commonFunction')
 
 async function updateLatLong(req,res){
     try {
-        const {Id,Latitude,Longitude} = req.body
+        const {Id,Latitude,Longitude,userId,isPole} = req.body
 
         if(!Id || (!Latitude || !isFloat(Latitude)) || (!Longitude || !isFloat(Longitude))) return sendError(res,"Bad Request",400)
 
-        let updateQuery = `EXEC spUpdateLatlong @flag=3, @Lat = '${Latitude}', @Long = '${Longitude}',@Sr_No=${Id}`
+            let updateQuery
+        if(isPole == true){
+        updateQuery = `EXEC spUpdateLatlong @flag=4, @Lat = '${Latitude}', @Long = '${Longitude}',@Sr_No=${Id}, @userId=${userId}`
 
+        }else{
+            updateQuery = `EXEC spUpdateLatlong @flag=3, @Lat = '${Latitude}', @Long = '${Longitude}',@Sr_No=${Id}, @userId=${userId}`
+
+        }
+
+        
         updateQuery = await executeQuery(updateQuery)
 
         return sendSuccess(res,"Success",updateQuery[0],200)
@@ -82,7 +90,7 @@ async function getSpecificLayer(req,res){
 
 async function InsertLayer(req,res){
     try {
-        let {rows,Fields,TableName} = req.body
+        let {rows,Fields,TableName,LayerType} = req.body
         console.log(req.body)
         layerName = 'Layer_'+TableName
         if(!layerName) return sendError(res,"Bad Request",400)
@@ -106,7 +114,7 @@ async function InsertLayer(req,res){
         }
 
         Values = Values.replace(/,$/, '');
-        let Query = `EXEC spGetRouteName  @flag='createLayer', @TableName='${layerName}', @Columns='${Columns}', @Values='${Values}'`
+        let Query = `EXEC spGetRouteName  @flag='createLayer', @TableName='${layerName}', @Columns='${Columns}', @Values='${Values}',@LayerType='${LayerType}'`
 
         Query = await executeQuery(Query)
 
@@ -145,13 +153,13 @@ async function updateSpecificLayer(req,res){
             }
             
             let Query = `EXEC spGetRouteName  @flag='insertRecordInLayer', @TableName='${layerName}',@Columns='${Columns}' , @Values=N'${Values}'`
-
+            console.log(Query)
             Query = await executeQuery(Query)
         }
 
         if(filterRecordToUpdate.length > 0){
             let Query = `EXEC spGetRouteName  @flag='updateLayer', @TableName='${layerName}', @data=N'${JSON.stringify(filterRecordToUpdate)}'`
-
+            console.log(Query)
             Query = await executeQuery(Query)
         }
 
