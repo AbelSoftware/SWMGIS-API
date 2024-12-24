@@ -10,7 +10,7 @@ const route=require('./routes/baseroute');
 mongoose.Promise=global.Promise;
 const port=process.env.PORT;
 const host=process.env.HOST;
-const dbcon=require('./helpers/init_mongodb');
+//const dbcon=require('./helpers/init_mongodb');
 const connectSql = require('./helpers/dbseinst')
 
 //const {verifyAccessToken } = require('./helpers/jwt_helper')

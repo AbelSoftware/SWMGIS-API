@@ -1,7 +1,7 @@
 {
   "name": "pspmsapi",
   "version": "1.0.0",
-  "description": "PSPMS API",
+  "description": "GIS API",
   "main": "pmsserver.js",
   "scripts": {
     "start": "node ./pmsserver.js",
