@@ -12,9 +12,10 @@ const port=process.env.PORT;
 const host=process.env.HOST;
 //const dbcon=require('./helpers/init_mongodb');
 const connectSql = require('./helpers/dbseinst')
-
+const cookieParser = require('cookie-parser')
 //const {verifyAccessToken } = require('./helpers/jwt_helper')
 const app=express();
+app.use(cookieParser())
 var allowedDomains = ['http://swd.mcgm.gov.in:8082/', 'http://swd.mcgm.gov.in:3000/api/'];
 var corsOptions = {
   origin: function (origin, callback) {
