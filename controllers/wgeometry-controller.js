@@ -84,9 +84,9 @@ module.exports = {
         try {
             // console.log(req.body)
             // const dynamicWhere = buildDynamicWhere(req.body);
-            let queryData = `EXEC spLayerMaster_GetLayerGeometryData 
-               @LayerName = '${req.body.LayerName}',@Ward = '${req.body.Ward}',@Prabhag = '${req.body.Prabhag}',
-               @Latitude= ${req.body.Latitude},   @Longitude=${req.body.Longitude} ,@UserId = ${req.body.UserId}     
+            let queryData = `EXEC spWebLayerMaster_GetLayerGeometryData 
+               @LayerName = '${req.body.LayerName}',@Zone = '${req.body.Ward}',@Ward = '${req.body.Ward}',@Prabhag = '${req.body.Prabhag}'
+              ,@FromDate= ${req.body.FromDate},@ToDate= ${req.body.FromDate},@UserId = ${req.body.UserId}     
                `
             updateQuery = await executeQuery(queryData)
             updateQuery.forEach(entry => {
@@ -95,7 +95,6 @@ module.exports = {
                     const geom = JSON.parse(entry.geom_text);
                     const geomType = geom.type;
                     const coordinates = geom.coordinates;
-
                     // Handle "Point" type
                     if (geomType === "Point") {
                         entry.Points = [
