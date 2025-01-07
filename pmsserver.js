@@ -1,77 +1,80 @@
-require('dotenv').config()
+require('dotenv').config();
 const http = require('http');
-const mongoose=require('mongoose');
-const bodyParser=require('body-parser');
-const express=require('express');
-const cors=require('cors');
-const path=require('path');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
 const morgan = require('morgan');
-const route=require('./routes/baseroute');
-mongoose.Promise=global.Promise;
-const port=process.env.PORT;
-const host=process.env.HOST;
-//const dbcon=require('./helpers/init_mongodb');
-const connectSql = require('./helpers/dbseinst')
-const cookieParser = require('cookie-parser')
-//const {verifyAccessToken } = require('./helpers/jwt_helper')
-const app=express();
-app.use(cookieParser())
-var allowedDomains = ['http://swd.mcgm.gov.in:8082/', 'http://swd.mcgm.gov.in:3000/api/'];
-var corsOptions = {
+const route = require('./routes/baseroute');
+const cookieParser = require('cookie-parser');
+const connectSql = require('./helpers/dbseinst');
+
+mongoose.Promise = global.Promise;
+const port = process.env.PORT || 3000;
+const host = process.env.HOST || 'localhost';
+
+const app = express();
+
+const allowedOrigins = ['http://localhost:4200', 'http://localhost:3000'];
+
+const corsOptions = {
   origin: function (origin, callback) {
-    // bypass the requests with no origin (like curl requests, mobile apps, etc )
-    if (!origin) return callback(null, true);
- 
-    if (allowedDomains.indexOf(origin) === -1) {
-      var msg = `This site ${origin} does not have an access. Only specific domains are allowed to access it.`;
-      return callback(new Error(msg), false);
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true); // Allow specific origins or requests without origin (e.g., Postman, curl)
+    } else {
+      callback(new Error('Not allowed by CORS'));
     }
-    return callback(null, true);
-  }
-}
-// Middleware 
+  },
+  credentials: true, // Allow cookies and credentials
+};
+
+// Middleware
 app.use(morgan('dev'));
-app.use(cors());
+app.use(cors(corsOptions)); // Apply CORS with options
+app.options('*', cors(corsOptions)); // Handle preflight requests globally
 
-// Enable JSON and URL-encoded form data parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-app.use(express.urlencoded({ extended: true ,limit:'55550mb'}));
-app.use(express.json( {limit: '10000mb', extended: true}));
+// JSON and URL-encoded form data parsing
+app.use(express.urlencoded({ extended: true, limit: '55550mb' }));
+app.use(express.json({ limit: '10000mb', extended: true }));
+
+// Static file handling
 app.use('/images', express.static(path.join(__dirname, '/images')));
-app.use('/imgs', express.static(path.join(__dirname, '/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
+// Routes
 app.use('/api', route);
 
-//test server
-app.get('/', async (req, res, next)=>{  
-res.send("Welcome to PMS API");
+app.get('/', async (req, res, next) => {
+  res.send('Welcome to PMS API');
 });
 
-//Catch Error 404
+// Catch Error 404
 app.use((req, res, next) => {
   const err = new Error('Not Found');
-  err.stack=404;
+  err.status = 404;
   next(err);
-})
+});
 
 // Error Handler Function
-app.use((err, req, res, next)=>{
-  const error=app.get('env') === 'development' ? err :{};
-  const status=err.status || 500;
+app.use((err, req, res, next) => {
+  const error = app.get('env') === 'development' ? err : {};
+  const status = err.status || 500;
 
-  //Responce to client
-  res.status(status).json({   
-    status: err.status || 500,
-    message: error.message,
-    data:[]   
+  // Response to client
+  res.status(status).json({
+    status: status,
+    message: error.message || 'Internal Server Error',
+    data: [],
   });
 
-  console.log(err);
-})
+  console.error(err);
+});
 
-// listening on port
-app.listen(port, ()=>{
-    console.log(`listening on port ${port}`);
-    connectSql.getPool()
-  });
+// Start the server
+app.listen(port, () => {
+  console.log(`Server listening on http://${host}:${port}`);
+  connectSql.getPool();
+});

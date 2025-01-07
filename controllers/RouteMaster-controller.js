@@ -120,7 +120,6 @@ async function InsertLayer(req, res) {
     }
 }
 
-
 // INSERT INTO [Route_Sweeping_Machines] (Geom)
 // VALUES (
 //     geometry::STGeomFromText(
@@ -128,6 +127,7 @@ async function InsertLayer(req, res) {
 //         4326 -- Spatial Reference System Identifier (SRID), commonly 4326 for WGS84.
 //     )
 // )
+
 async function updateSpecificLayer(req, res) {
     try {
         let { data, TableName } = req.body

@@ -3,9 +3,9 @@ const sql = require('mssql');
 // Configuration for the MSSQL database connection
 const config = {
   user: 'sa',          // Database username
-  password:'sa123',// 'aBel2003',  // Database password
-  server: 'LAPTOP-QB5P34AB',//'172.174.239.107',      // Server IP or hostname LAPTOP-QB5P34AB
-  database: 'SWMGISDB',      // Name of the database
+  password:'Mcmcr@2024',// 'aBel2003',  // Database password
+  server: 'bmcgis.mcgm.gov.in',//'172.174.239.107',      // Server IP or hostname LAPTOP-QB5P34AB
+  database: 'MCMCR_SWMGIS',      // Name of the database
   pool: {
     max: 1000,                     // Maximum number of connections in the pool
     min: 0,                      // Minimum number of connections in the pool

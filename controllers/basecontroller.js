@@ -1,5 +1,6 @@
-const GeometryLayer = require("./GeometryMaster-controller");
-
+const MGeometryLayer = require("./MGeometryMaster-controller");
+const User = require("./user-controller");
+const WebGeometry=require("./wgeometry-controller")
 module.exports={
-    GeometryLayer
+    MGeometryLayer,User,WebGeometry
 }
